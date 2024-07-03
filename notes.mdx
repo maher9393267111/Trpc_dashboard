@@ -4,3 +4,12 @@ https://github.com/Kirolos-kr7/inventory
 
 
 --------
+   "dev": "next dev --turbo",
+    "build": "npx prisma generate && next build",
+    "postinstall": "npx prisma generate",
+    "backup": "tsx prisma/backup.ts",
+    "restore": "tsx prisma/restore.ts",
+    "start": "next start",
+    "typecheck": "tsc --noEmit --incremental false",
+    "vercel-build": "npx prisma generate && next build",
+    "lint": "next lint"
