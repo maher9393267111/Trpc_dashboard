@@ -22,15 +22,31 @@ export const TrpcProvider: React.FC<{ children: ReactNode }> = ({
   const domain = 'https://trpc-dashboard.vercel.app'
 
   const url =
-    process.env.NODE_ENV == 'production'
+    process.env.NODE_ENV !== 'production'
       ? `https://${domain}/api/trpc`
       : 'http://localhost:3000/api/trpc'
+
+
+      function getBaseUrl() {
+        if (typeof window === 'undefined') {
+          return ''
+        }
+        // reference for vercel.com
+
+      
+        // assume localhost
+        return   process.env.NODE_ENV == 'production'
+        ? `https://${domain}/api/trpc`
+        : 'http://localhost:3000/api/trpc'
+      }
+
+
 
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
         httpBatchLink({
-          url,
+          url :getBaseUrl(),
           fetch: async (input, init?) => {
             const fetch = getFetch()
             return fetch(input, {
