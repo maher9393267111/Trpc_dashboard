@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+body {
+  opacity: 1;
+  background-image: url('/cross.svg');
+  background-size: 70px;
+}
+
+@media screen and (width <= 640px) {
+  .sb {
+    overflow-x: hidden;
+  }
+}
+
+::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 84 97 / var(--tw-bg-opacity));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@layer components {
+  .select {
+    background-position: 25px, 21px !important;
+  }
+
+  .table :where(thead, tfoot) :where(th, td) {
+    @apply bg-base-200 text-white;
+  }
+
+  .table :where(tbody th, tbody td) {
+    @apply bg-base-100;
+  }
+
+  .table tr.active :where(td, th) {
+    @apply !bg-base-300;
+  }
+
+  .table tr.not-regular :where(th, td) {
+    background-size: 10px 10px;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #f7444445 0,
+      #f7444445 1px,
+      #2d333a00 0,
+      #2d333a00 50%
+    );
+  }
+}

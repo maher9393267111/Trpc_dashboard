@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  isAdmin   Boolean  @default(false)
+  isDeleted Boolean  @default(false)
+
+  Transactions Transaction[]
+}
+
+model ServiceArea {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  Donee Donee[]
+}
+
+model Donee {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  location   ServiceArea @relation(fields: [locationId], references: [id])
+  createdAt  DateTime    @default(now())
+  locationId Int
+  isRegular  Boolean     @default(true)
+  Checkout   Checkout[]
+
+  @@index([locationId])
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  name      String
+  count     Int      @default(0)
+  perBag    Int      @default(0)
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+  Supply       Supply[]
+  Checkout     Checkout[]
+}
+
+enum FinanceType {
+  income
+  expense
+}
+
+model FinanceList {
+  id      Int         @id @default(autoincrement())
+  name    String      @unique
+  type    FinanceType
+  Finance Finance[]
+}
+
+model Finance {
+  type  FinanceType
+  srcId Int
+  month String
+  year  String
+  price Float       @default(0)
+  src   FinanceList @relation(fields: [srcId], references: [id])
+
+  @@id([srcId, month, year, type])
+  @@index([srcId])
+}
+
+model Supply {
+  id        Int      @id @default(autoincrement())
+  srcId     Int
+  month     String
+  year      String
+  price     Float    @default(0)
+  count     Int      @default(0)
+  src       Item     @relation(fields: [srcId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([srcId])
+}
+
+model Checkout {
+  month   String
+  year    String
+  amount  Int
+  itemId  Int
+  doneeId Int
+
+  Donee Donee @relation(fields: [doneeId], references: [id])
+  Item  Item  @relation(fields: [itemId], references: [id])
+
+  @@id([doneeId, itemId, month, year])
+  @@index([itemId])
+  @@index([doneeId])
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  message   String
+  createdAt DateTime @default(now())
+  itemId    Int
+  userId    Int
+
+  for Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  by  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+  @@index([userId])
+}
+
+model meta {
+  key   String @id
+  value String
+}
+
+enum SnapshotType {
+  inventory
+}
+
+model snapshot {
+  createdAt DateTime     @id @default(now())
+  month     String
+  year      String
+  content   Json
+  type      SnapshotType @default(inventory)
+
+  @@index([month, year])
+}
