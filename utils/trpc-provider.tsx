@@ -19,7 +19,7 @@ export const TrpcProvider: React.FC<{ children: ReactNode }> = ({
       })
   )
 
-  const domain = 'inventory-stk.vercel.app'
+  const domain = 'https://trpc-dashboard.vercel.app'
 
   const url =
     process.env.NODE_ENV == 'production'
